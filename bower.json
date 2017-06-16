@@ -1,0 +1,30 @@
+{
+  "name": "brs",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "MichaelAlfonso"
+  ],
+  "developer": "Michael Alfonso Martinez <michael950626@gmail.com>",
+  "license": "ISC",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.0.0",
+    "bootstrap": "^3.3.7",
+    "sweetalert2": "^6.6.5",
+    "fabric.js": "fabric#^1.7.13"
+  },
+  "devDependencies": {
+    "jquery": "^3.0.0",
+    "bootstrap": "^3.3.7",
+    "sweetalert2": "^6.6.5",
+    "fabric.js": "fabric#^1.7.13"
+  }
+}

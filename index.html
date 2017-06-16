@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Bimbo | Rise and Shine</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+
+    <link rel="stylesheet" href="css/styles.min.css">
+    <meta property="og:url" content="#" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Rise and Shine" />
+    <meta property="og:description" content="Rise and Shine" />
+    <meta property="og:image" content="#" />
+
+  </head>
+  <body>
+
+    <div id="main" class="container">
+      <div class="main">
+
+        <div class="logo row">
+          <img src="/assets/logo.png" alt="logo" title="logo">
+        </div>
+
+        <div class="btns row">
+          <p>Change your Facebook profile photo</p>
+          <div class="btnc col col-xs-12 col-sm-6 col-md-6 col-lg-6 load-photo">
+            <input type="file" name="file" class="file">
+            <img id="img-load">
+            <button type="button" class="btn" name="button">Load photo</button>
+          </div>
+          <div class="btnc col col-xs-12 col-sm-6 col-md-6 col-lg-6 profile-photo">
+            <button type="button" class="btn" name="button">Use profile photo</button>
+          </div>
+        </div>
+
+        <div class="photo col col-xs-12 col-md-12 col-lg-12">
+          <p>This is how your Facebook profile photo will look:</p>
+          <div class="canvas">
+            <canvas id="canvas" width="543" height="543"></canvas>
+          </div>
+        </div>
+
+        <div class="fb-btn col col-xs-12 col-md-12 col-lg-12">
+          <button type="button" name="button">Publish my photo</button>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="js/vendors.min.js"></script>
+    <script src="js/scripts.min.js"></script>
+
+  </body>
+</html>

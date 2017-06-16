@@ -1,0 +1,145 @@
+body{
+  background: #597aac url("../assets/background-top.jpg") no-repeat;
+  background-size: 100% auto;
+  position: relative;
+  &::after{
+    content: "";
+    width: 100%;
+    bottom: 0;
+    display: block;
+    height: 518px;
+    background: url("../assets/background-bottom.jpg") no-repeat;
+    background-size: 100% auto;
+    background-position: 0px;
+    position: absolute;
+    z-index: -1;
+    @include mobile{
+      background-size: auto 100%;
+    }
+  }
+}
+#main{
+}
+.logo{
+  text-align: center;
+  margin-top: 31px;
+}
+.btns{
+  p{
+    font-family: 'Populaire';
+    color: white;
+    font-size: 46px;
+    line-height: 1;
+    margin-top: 37px;
+    margin-bottom: 0;
+    text-align: center;
+  }
+}
+.btnc{
+  position: relative;
+  padding: 12px 22.5px 0;
+  &.load-photo{
+    text-align: right;
+    @include mobile{
+      text-align: center;
+    }
+    button{
+      background-color: #bd435f;
+      &:hover{
+        background-color: #AB3D56;
+      }
+    }
+  }
+  &.profile-photo{
+    text-align: left;
+    @include mobile{
+      text-align: center;
+    }
+    button{
+      background-color: #45a9e1;
+      &:hover{
+        background-color: #409DD1;
+      }
+    }
+  }
+  button{
+    border: none;
+    border-radius: 5px;
+    font-family: 'Populaire';
+    color: white;
+    font-size: 29px;
+    padding: 18px 10px 15px;
+    text-align: center;
+    width: 224px;
+    line-height: 1;
+    transition: all 0.3s ease;
+    outline: none;
+    &:focus,
+    &:active,
+    &:hover{
+      color: white;
+    }
+  }
+  img{
+    position: absolute;
+    opacity: 0;
+    z-index: -99;
+  }
+  input{
+    display: none;
+    &.file{
+      opacity: 0;
+      display: block;
+      position: absolute;
+      width: 224px;
+      height: 62px;
+      right: 22px;
+      cursor: pointer;
+    }
+  }
+}
+
+.photo{
+  text-align: center;
+  font-family: 'Populaire';
+  font-size: 31px;
+  color: white;
+  line-height: 1;
+  margin-top: 60px;
+  .canvas{
+    // border: 7px solid white;
+    max-width: 543px;
+    margin: 0 auto;
+    overflow: hidden;
+    canvas{
+      width: 100% !important;
+      height: 100% !important;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.fb-btn{
+  text-align: center;
+  margin-top: 33px;
+  margin-bottom: 118px;
+  button{
+    font-family: 'Populaire';
+    background-image: url("../assets/fb.png");
+    background-color: #3d5d96;
+    background-position: 20px center;
+    background-repeat: no-repeat;
+    border-radius: 7px;
+    padding: 25px 20px 17px 66px;
+    border: none;
+    color: white;
+    font-size: 38px;
+    line-height: 1;
+    transition: all 0.3s ease;
+    outline: none;
+    &:hover{
+      background-color: #345083;
+    }
+  }
+
+}
