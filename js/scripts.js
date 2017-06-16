@@ -1,25 +1,59 @@
 $(function(){
 
+  var text = 0;
+  var texts = [
+    '../assets/texts/f1.png',
+    '../assets/texts/f2.png',
+    '../assets/texts/f3.png',
+    '../assets/texts/f4.png',
+  ];
+  var instance;
+  function ChangeText() {
+    var img = new Image();
+    img.src = texts[text];
+    img.onload = function () {
+      var w = img.width;
+      var l = ( $(".canvas").width() - w ) / 2;
+      var center = canvas.getCenter();
+      canvas.setOverlayImage(texts[text], canvas.renderAll.bind(canvas), {
+        top: 30,
+        left: center.left,
+        originX: 'center',
+        originY: 'top'
+       });
+       img = {};
+    }
+    text++;
+    if( text == 4 ){
+      text = 0;
+    }
+  }
+
   function canvasFixSize() {
     $(".canvas").height($(".canvas").width());
   }
 
-  $(window).on('resize', function(event) {
-    canvasFixSize();
-  });
+  canvasFixSize();
 
   var canvas = new fabric.Canvas('canvas',{
-        preserveObjectStacking: false
+        preserveObjectStacking: true,
+        selection : false,
     });
 
-  canvas.setOverlayImage('../assets/background-canvas.png', canvas.renderAll.bind(canvas), {
-    originX: 'left',
-    originY: 'top',
+  fabric.Image.fromURL('../assets/background-canvas.png', function (img) {
+    canvas.add(img);
+    canvas.moveTo(img, 9999);
+  },{
     left: 0,
     top: 0,
-    zindex: 999
-   });
-
+    angle: 0,
+    opacity: 1,
+    lockMovementX: true,
+    lockMovementY: true,
+    hasBorders: false,
+    hasControls: false,
+    evented: false,
+  });
 
   function readURL(input,el) {
     if (input.files && input.files[0]) {
@@ -33,17 +67,20 @@ $(function(){
             left: 0,
             top: 0,
             angle: 0,
-            opacity: 1
+            opacity: 1,
           });
           canvas.add(imgInstance);
           canvas.moveTo(imgInstance, -9999);
-
         },100);
 
       }
       reader.readAsDataURL(input.files[0]);
     }
   }
+
+  $(".photo .canvas .canvas-container").on('click', function(event) {
+    ChangeText();
+  });
 
   $(".btnc input.file").on('change',function(event) {
 
@@ -59,6 +96,11 @@ $(function(){
     $(this).next().removeClass('hover');
   });
 
+  $(window).on('resize', function(event) {
+    canvasFixSize();
+  });
+
+  ChangeText();
 
 
 });
