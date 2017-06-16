@@ -1,8 +1,25 @@
 $(function(){
-  var canvas = new fabric.Canvas('backgroundCanvas');
-  fabric.Image.fromURL('../assets/background-canvas.png', function(img) {
-    canvas.add(img);
+
+  function canvasFixSize() {
+    $(".canvas").height($(".canvas").width());
+  }
+
+  $(window).on('resize', function(event) {
+    canvasFixSize();
   });
+
+  var canvas = new fabric.Canvas('canvas',{
+        preserveObjectStacking: false
+    });
+
+  canvas.setOverlayImage('../assets/background-canvas.png', canvas.renderAll.bind(canvas), {
+    originX: 'left',
+    originY: 'top',
+    left: 0,
+    top: 0,
+    zindex: 999
+   });
+
 
   function readURL(input,el) {
     if (input.files && input.files[0]) {
@@ -11,15 +28,16 @@ $(function(){
         el.attr('src', e.target.result);
 
         setTimeout(function () {
-          var canvas = new fabric.Canvas('photoCanvas');
           var imgElement = document.getElementById('img-load');
           var imgInstance = new fabric.Image(imgElement, {
-            left: 1,
-            top: 1,
-            angle: 10,
+            left: 0,
+            top: 0,
+            angle: 0,
             opacity: 1
           });
           canvas.add(imgInstance);
+          canvas.moveTo(imgInstance, -9999);
+
         },100);
 
       }
@@ -33,6 +51,12 @@ $(function(){
       var f = this.files[0];
       readURL(this,$(this).siblings('img'));
     }
+  });
+
+  $(".btnc input.file").hover(function() {
+      $(this).next().addClass('hover');
+  }, function() {
+    $(this).next().removeClass('hover');
   });
 
 
