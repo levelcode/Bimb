@@ -1,5 +1,5 @@
 $(function(){
-  var canvas = new fabric.Canvas('canvas');
+  var canvas = new fabric.Canvas('backgroundCanvas');
   fabric.Image.fromURL('../assets/background-canvas.png', function(img) {
     canvas.add(img);
   });
@@ -9,15 +9,19 @@ $(function(){
       var reader = new FileReader();
       reader.onload = function (e) {
         el.attr('src', e.target.result);
-        var imgElement = document.getElementById('img-load');
-        console.log(imgElement);
-        var imgInstance = new fabric.Image(imgElement, {
-          left: 0,
-          top: 0,
-          angle: 0,
-          opacity: 1
-        });
-        canvas.add(imgInstance);
+
+        setTimeout(function () {
+          var canvas = new fabric.Canvas('photoCanvas');
+          var imgElement = document.getElementById('img-load');
+          var imgInstance = new fabric.Image(imgElement, {
+            left: 1,
+            top: 1,
+            angle: 10,
+            opacity: 1
+          });
+          canvas.add(imgInstance);
+        },100);
+
       }
       reader.readAsDataURL(input.files[0]);
     }
