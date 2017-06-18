@@ -118,14 +118,35 @@ $(function(){
           getPhoto(response.id);
         });
       }
+    },{scope: 'publish_actions'});
+  });
+
+
+  $(".fb-btn.share button").on('click', function(event) {
+    FB.ui({
+      method: 'share_open_graph',
+      action_type: 'og.shares',
+      action_properties: JSON.stringify({
+          object : {
+             'og:url': "https://riseandshine.ga",
+             'og:title': "Bimbo",
+             'og:description': "Rise and Shine",
+             'og:og:image:width': 543,
+             'og:image:height': 543,
+             'og:image': "https://riseandshine.ga/assets/logo.png"
+          }
+      })
+    },function (response) {
+      console.log(response);
     });
   });
 
 
-  $(".fb-btn button").on('click', function(event) {
+  $(".fb-btn.publish button, .donwload button").on('click', function(event) {
     var w = $(".canvas").width();
     var authToken = FB.getAccessToken();
     var dataURL = canvas.toDataURL("image/jpeg", 0.98);
+    var _this = $(this);
 
     var img = new Image();
     img.src = dataURL;
@@ -152,28 +173,36 @@ $(function(){
          processData: false,
          contentType: false,
       }).done(function(response){
-        console.log(window.location.origin+"/"+response);
-        FB.ui({
-          method: 'share_open_graph',
-          action_type: 'og.shares',
-          action_properties: JSON.stringify({
-              object : {
-                 'og:url': "https://riseandshine.ga",
-                 'og:title': "test",
-                 'og:description': "test2",
-                 'og:og:image:width': w,
-                 'og:image:height': w,
-                 'og:image': window.location.origin+"/"+response
-              }
-          })
-        },function (response) {
-          console.log(response);
-        });
+
+        var url = window.location.origin+"/"+response;
+
+        if( _this.hasClass('donwload') ){
+          window.open("services/download.php?url="+url, "_blank");
+        }else{
+          FB.ui({
+            method: 'share_open_graph',
+            action_type: 'og.shares',
+            action_properties: JSON.stringify({
+                object : {
+                   'og:url': "https://riseandshine.ga",
+                   'og:title': "test",
+                   'og:description': "test2",
+                   'og:og:image:width': w,
+                   'og:image:height': w,
+                   'og:image': url
+                }
+            })
+          },function (response) {
+            console.log(response);
+          });
+        }
       });
-
     }
-
   });
+
+
+
+
 
   $(".btnc input.file").on('change',function(event) {
     if( typeof this.files[0] != 'undefined' ){
@@ -214,7 +243,8 @@ $(function(){
     evented: false,
   });
 
-  $(".photo .canvas .canvas-container").on('click', function(event) {
+  // $(".photo .canvas .canvas-container").on('click', function(event) {
+  $(".btnc.change-msj button").on('click', function(event) {
     ChangeText();
   });
 

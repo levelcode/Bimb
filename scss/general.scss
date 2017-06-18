@@ -56,6 +56,16 @@ body{
 .btnc{
   position: relative;
   padding: 12px 22.5px 0;
+  &.change-msj{
+    text-align: center;
+    margin: 20px 0 -30px;
+    button{
+      background-color: #3d5d96;
+      &:hover{
+        background-color: #345083;
+      }
+    }
+  }
   &.load-photo{
     text-align: right;
     @include mobile{
@@ -158,11 +168,40 @@ body{
     }
   }
 }
+.donwload{
+  margin-bottom: 118px;
+  margin-top: 30px;
+  text-align: center;
+  button{
+    border: none;
+    border-radius: 5px;
+    font-family: Populaire;
+    color: #fff;
+    font-size: 38px;
+    line-height: 1;
+    padding: 18px 10px 15px;
+    text-align: center;
+    width: 224px;
+    line-height: 1;
+    transition: all .3s ease;
+    outline: 0;
+    background-color: rgb(0, 166, 77);
+    color: white;
+    &:hover{
+      background-color: rgb(3, 150, 72);
+    }
+  }
+}
 
 .fb-btn{
   text-align: center;
   margin-top: 33px;
-  margin-bottom: 118px;
+  &.share{
+    button{
+      float: left;
+      margin-left: 20px;
+    }
+  }
   button{
     font-family: 'Populaire';
     background-image: url("../assets/fb.png");
@@ -177,6 +216,7 @@ body{
     line-height: 1;
     transition: all 0.3s ease;
     outline: none;
+    float: right;
     @include mobile{
       font-size: 34px;
     }
