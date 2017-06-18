@@ -29,9 +29,168 @@ $(function(){
     }
   }
 
+  function dataURItoBlob(dataURI) {
+    var byteString = atob(dataURI.split(',')[1]);
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: 'image/png' });
+  }
+
   function canvasFixSize() {
     $(".canvas").height($(".canvas").width());
   }
+
+  function getPhoto(id) {
+    var w = $(".canvas").width();
+    var imgProfile = "http://graph.facebook.com/" + id + "/picture?width="+w+"&height="+w;
+
+    $('#img-load').attr("src",imgProfile);
+    $('#img-load')[0].crossOrigin = "Anonymous";
+    $('#img-load').on('load', function(event) {
+      renderPhoto();
+    });
+  }
+
+  function renderPhoto(){
+    setTimeout(function () {
+      if( typeof window.instanceImg != "undefined" ){
+        canvas.remove(window.instanceImg);
+      }
+      var imgElement = document.getElementById('img-load');
+      var imgInstance = new fabric.Image(imgElement, {
+        left: 0,
+        top: 0,
+        angle: 0,
+        opacity: 1,
+        borderColor: 'rgba(2, 0, 100, 0.9)',
+        cornerColor: 'rgba(2, 0, 100, 0.9)',
+        transparentCorners: false
+      });
+      window.instanceImg = imgInstance;
+      canvas.add(imgInstance).setActiveObject(imgInstance);
+      canvas.moveTo(imgInstance, -9999);
+    },100);
+  }
+
+  function readURL(input,el) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        el.attr('src', e.target.result);
+        el[0].crossOrigin = "Anonymous";
+        renderPhoto();
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '274662929667884',
+      xfbml      : true,
+      version    : 'v2.9'
+    });
+    FB.AppEvents.logPageView();
+
+    FB.getLoginStatus(function(response) {
+      if( response.status == 'connected' ){
+        getPhoto(response.authResponse.userID);
+      }
+    });
+
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  $(".btnc.profile-photo button").on('click', function(event) {
+    FB.login(function(response) {
+      if (response.authResponse) {
+        FB.api('/me', function(response) {
+          getPhoto(response.id);
+        });
+      }
+    });
+  });
+
+
+  $(".fb-btn button").on('click', function(event) {
+    var w = $(".canvas").width();
+    var authToken = FB.getAccessToken();
+    var dataURL = canvas.toDataURL("image/jpeg", 0.98);
+
+    var img = new Image();
+    img.src = dataURL;
+    img.crossOrigin = "Anonymous";
+    img.onload = function () {
+
+      var canvas = document.createElement("canvas");
+      var w = 543;
+  		var h = w;
+
+  		canvas.width = w;
+  		canvas.height = h;
+  		var ctx = canvas.getContext("2d");
+  		ctx.drawImage(img, 0, 0, w, h);
+  		var dataURL = canvas.toDataURL("image/jpeg", 0.98);
+      blob = dataURItoBlob(dataURL);
+
+      var fd = new FormData();
+      fd.append("foto", blob);
+      $.ajax({
+         url: "services/upload_photo.php",
+         type: "POST",
+         data: fd,
+         processData: false,
+         contentType: false,
+      }).done(function(response){
+        console.log(window.location.origin+"/"+response);
+        FB.ui({
+          method: 'share_open_graph',
+          action_type: 'og.shares',
+          action_properties: JSON.stringify({
+              object : {
+                 'og:url': "https://riseandshine.ga",
+                 'og:title': "test",
+                 'og:description': "test2",
+                 'og:og:image:width': w,
+                 'og:image:height': w,
+                 'og:image': window.location.origin+"/"+response
+              }
+          })
+        },function (response) {
+          console.log(response);
+        });
+      });
+
+    }
+
+  });
+
+  $(".btnc input.file").on('change',function(event) {
+    if( typeof this.files[0] != 'undefined' ){
+      var f = this.files[0];
+      readURL(this,$(this).siblings('img'));
+    }
+  });
+
+  $(".btnc input.file").hover(function() {
+      $(this).next().addClass('hover');
+  }, function() {
+    $(this).next().removeClass('hover');
+  });
+
+  $(window).on('resize', function(event) {
+    canvasFixSize();
+  });
 
   canvasFixSize();
 
@@ -55,52 +214,10 @@ $(function(){
     evented: false,
   });
 
-  function readURL(input,el) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        el.attr('src', e.target.result);
-
-        setTimeout(function () {
-          var imgElement = document.getElementById('img-load');
-          var imgInstance = new fabric.Image(imgElement, {
-            left: 0,
-            top: 0,
-            angle: 0,
-            opacity: 1,
-          });
-          canvas.add(imgInstance);
-          canvas.moveTo(imgInstance, -9999);
-        },100);
-
-      }
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-
   $(".photo .canvas .canvas-container").on('click', function(event) {
     ChangeText();
   });
 
-  $(".btnc input.file").on('change',function(event) {
-
-    if( typeof this.files[0] != 'undefined' ){
-      var f = this.files[0];
-      readURL(this,$(this).siblings('img'));
-    }
-  });
-
-  $(".btnc input.file").hover(function() {
-      $(this).next().addClass('hover');
-  }, function() {
-    $(this).next().removeClass('hover');
-  });
-
-  $(window).on('resize', function(event) {
-    canvasFixSize();
-  });
-
   ChangeText();
-
 
 });
