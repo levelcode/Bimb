@@ -45,7 +45,7 @@ $(function(){
 
   function getPhoto(id) {
     var w = $(".canvas").width();
-    var imgProfile = "http://graph.facebook.com/" + id + "/picture?width="+w+"&height="+w;
+    var imgProfile = "https://graph.facebook.com/" + id + "/picture?width="+w+"&height="+w;
 
     $('#img-load').attr("src",imgProfile);
     $('#img-load')[0].crossOrigin = "Anonymous";
