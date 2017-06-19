@@ -44,8 +44,9 @@ $(function(){
   }
 
   function getPhoto(id) {
-    var w = $(".canvas").width();
+    var w = 543;
     var imgProfile = "https://graph.facebook.com/" + id + "/picture?width="+w+"&height="+w;
+    var imgProfile = "https://graph.facebook.com/100018373652787/picture?width=543&height=543";
 
     $('#img-load').attr("src",imgProfile);
     $('#img-load')[0].crossOrigin = "Anonymous";
