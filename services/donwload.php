@@ -1,11 +1,9 @@
 <?php
 
-  if( strpos($_GET['url'], "services/") !== FALSE ){
+  if( strpos($_GET['url'], "uploads/") !== FALSE ){
     header("Content-Type: image/png");
-    header("Content-Disposition: attachment; filename=\"" .$_GET['url']. ".png\";");
-    exit();
+    header("Content-Disposition: attachment; filename=photo.png;");
+    readfile($_GET['url']);
   }
-
-
 
 ?>

@@ -166,6 +166,12 @@ $(function(){
 
       var fd = new FormData();
       fd.append("foto", blob);
+      swal({
+        title: 'Loading...',
+        showCancelButton: false,
+        showConfirmButton: false,
+        showCloseButton: false,
+      });
       $.ajax({
          url: "services/upload_photo.php",
          type: "POST",
@@ -175,26 +181,31 @@ $(function(){
       }).done(function(response){
 
         var url = window.location.origin+"/"+response;
-
-        if( _this.hasClass('donwload') ){
-          window.open("services/download.php?url="+url, "_blank");
+        console.log(url);
+        if( _this.parent().hasClass('donwload') ){
+          window.open("services/donwload.php?url="+url, "_blank");
         }else{
-          FB.ui({
-            method: 'share_open_graph',
-            action_type: 'og.shares',
-            action_properties: JSON.stringify({
-                object : {
-                   'og:url': "https://riseandshine.ga",
-                   'og:title': "test",
-                   'og:description': "test2",
-                   'og:og:image:width': w,
-                   'og:image:height': w,
-                   'og:image': url
-                }
-            })
-          },function (response) {
-            console.log(response);
+
+          FB.getLoginStatus(function(response) {
+            if( response.status == 'connected' ){
+              FB.api('/photos', 'post', {
+                  message:'photo description',
+                  url: url
+              }, function(response){
+                console.log(response);
+                swal({
+                  title: 'Congratulations',
+                  text: ' Your photo has been published',
+                  type: 'success',
+                  confirmButtonColor: '#fb8f22',
+                });
+              });
+            }else{
+              swal.close();
+              $(".btnc.profile-photo button").trigger('click');
+            }
           });
+
         }
       });
     }
