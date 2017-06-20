@@ -46,7 +46,7 @@ $(function(){
   function getPhoto(id) {
     var w = 543;
     var imgProfile = "https://graph.facebook.com/" + id + "/picture?width="+w+"&height="+w;
-    var imgProfile = "https://graph.facebook.com/100018373652787/picture?width=543&height=543";
+    // var imgProfile = "https://graph.facebook.com/100018373652787/picture?width=543&height=543";
 
     $('#img-load').attr("src",imgProfile);
     $('#img-load')[0].crossOrigin = "Anonymous";
@@ -185,12 +185,13 @@ $(function(){
         console.log(url);
         if( _this.parent().hasClass('donwload') ){
           window.open("services/donwload.php?url="+url, "_blank");
+          swal.close();
         }else{
 
           FB.getLoginStatus(function(response) {
             if( response.status == 'connected' ){
               FB.api('/photos', 'post', {
-                  message:'photo description',
+                  message:'photo created by https://riseandshine.ga/',
                   url: url
               }, function(response){
                 console.log(response);
