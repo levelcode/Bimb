@@ -2,10 +2,10 @@ $(function(){
 
   var text = 0;
   var texts = [
-    '../assets/texts/f1.png',
-    '../assets/texts/f2.png',
-    '../assets/texts/f3.png',
-    '../assets/texts/f4.png',
+    '/assets/texts/f1.png',
+    '/assets/texts/f2.png',
+    '/assets/texts/f3.png',
+    '/assets/texts/f4.png',
   ];
   var instance;
   function ChangeText() {
@@ -16,6 +16,7 @@ $(function(){
       var l = ( $(".canvas").width() - w ) / 2;
       var center = canvas.getCenter();
       canvas.setOverlayImage(texts[text], canvas.renderAll.bind(canvas), {
+        crossOrigin: 'anonymous',
         top: 30,
         left: center.left,
         originX: 'center',
@@ -44,12 +45,14 @@ $(function(){
   }
 
   function getPhoto(id) {
-    var w = 543;
+    var w = Math.floor($(".canvas").width());
     var imgProfile = "https://graph.facebook.com/" + id + "/picture?width="+w+"&height="+w;
     // var imgProfile = "https://graph.facebook.com/100018373652787/picture?width=543&height=543";
 
     $('#img-load').attr("src",imgProfile);
     $('#img-load')[0].crossOrigin = "Anonymous";
+    $('#img-load')[0].crossorigin = "anonymous";
+    $('#img-load')[0].setAttribute("crossOrigin","Anonymous");
     $('#img-load').on('load', function(event) {
       renderPhoto();
     });
@@ -57,6 +60,11 @@ $(function(){
 
   function renderPhoto(){
     setTimeout(function () {
+      var w = Math.floor($(".canvas").width());
+      var scale = 0.75;
+      if( $(window).width() < 768 ){
+        scale = 1.7;
+      }
       if( typeof window.instanceImg != "undefined" ){
         canvas.remove(window.instanceImg);
       }
@@ -68,7 +76,10 @@ $(function(){
         opacity: 1,
         borderColor: 'rgba(2, 0, 100, 0.9)',
         cornerColor: 'rgba(2, 0, 100, 0.9)',
-        transparentCorners: false
+        transparentCorners: false,
+        crossOrigin: 'Anonymous',
+        scaleX: scale,
+        scaleY: scale
       });
       window.instanceImg = imgInstance;
       canvas.add(imgInstance).setActiveObject(imgInstance);
@@ -82,6 +93,8 @@ $(function(){
       reader.onload = function (e) {
         el.attr('src', e.target.result);
         el[0].crossOrigin = "Anonymous";
+        el[0].crossorigin = "anonymous";
+        el[0].setAttribute("crossOrigin","Anonymous");
         renderPhoto();
       }
       reader.readAsDataURL(input.files[0]);
@@ -92,7 +105,8 @@ $(function(){
     FB.init({
       appId      : '274662929667884',
       xfbml      : true,
-      version    : 'v2.9'
+      version    : 'v2.9',
+      status     : true
     });
     FB.AppEvents.logPageView();
 
@@ -100,7 +114,7 @@ $(function(){
       if( response.status == 'connected' ){
         getPhoto(response.authResponse.userID);
       }
-    });
+    },true);
 
   };
 
@@ -123,27 +137,27 @@ $(function(){
   });
 
 
-  $(".fb-btn.share button").on('click', function(event) {
-    FB.ui({
-      method: 'share_open_graph',
-      action_type: 'og.shares',
-      action_properties: JSON.stringify({
-          object : {
-             'og:url': "https://riseandshine.ga",
-             'og:title': "Bimbo",
-             'og:description': "Rise and Shine",
-             'og:og:image:width': 543,
-             'og:image:height': 543,
-             'og:image': "https://riseandshine.ga/assets/logo.png"
-          }
-      })
-    },function (response) {
-      console.log(response);
-    });
-  });
+  // $(".fb-btn.share button").on('click', function(event) {
+  //   FB.ui({
+  //     method: 'share_open_graph',
+  //     action_type: 'og.shares',
+  //     action_properties: JSON.stringify({
+  //         object : {
+  //            'og:url': "https://riseandshine.ga",
+  //            'og:title': "Bimbo",
+  //            'og:description': "Rise and Shine",
+  //            'og:og:image:width': 543,
+  //            'og:image:height': 543,
+  //            'og:image': "https://riseandshine.ga/assets/logo.png"
+  //         }
+  //     })
+  //   },function (response) {
+  //     console.log(response);
+  //   });
+  // });
 
 
-  $(".fb-btn.publish button, .donwload button").on('click', function(event) {
+  $(".fb-btn.publish button, .donwload button, .fb-btn.share button").on('click', function(event) {
     var w = $(".canvas").width();
     var authToken = FB.getAccessToken();
     var dataURL = canvas.toDataURL("image/jpeg", 0.98);
@@ -152,6 +166,8 @@ $(function(){
     var img = new Image();
     img.src = dataURL;
     img.crossOrigin = "Anonymous";
+    img.crossorigin = "anonymous";
+    img.setAttribute("crossOrigin","Anonymous");
     img.onload = function () {
 
       var canvas = document.createElement("canvas");
@@ -186,27 +202,61 @@ $(function(){
         if( _this.parent().hasClass('donwload') ){
           window.open("services/donwload.php?url="+url, "_blank");
           swal.close();
+        }else if ( _this.parent().hasClass('share') ){
+          swal.close();
+          FB.ui({
+            method: 'share_open_graph',
+            action_type: 'og.shares',
+            action_properties: JSON.stringify({
+                object : {
+                   'og:url': "https://riseandshine.ga",
+                   'og:title': "Bimbo",
+                   'og:description': "Rise and Shine",
+                   'og:og:image:width': 543,
+                   'og:image:height': 543,
+                   'og:image': url
+                }
+            })
+          },function (response) {
+            console.log(response);
+          });
         }else{
 
           FB.getLoginStatus(function(response) {
             if( response.status == 'connected' ){
               FB.api('/photos', 'post', {
-                  message:'photo created by https://riseandshine.ga/',
+                  //message:'photo created by https://riseandshine.ga/',
                   url: url
               }, function(response){
                 console.log(response);
-                swal({
-                  title: 'Congratulations',
-                  text: ' Your photo has been published',
-                  type: 'success',
-                  confirmButtonColor: '#fb8f22',
-                });
+                if( typeof response.error == 'undefined' ){
+                  swal({
+                    title: 'Congratulations',
+                    text: ' Your photo has been published',
+                    type: 'success',
+                    confirmButtonColor: '#fb8f22',
+                  });
+                }else{
+                  var msj = "";
+                  if( response.error.message.split("(#200)").length > 0 ){
+                    msj = "Please allow the permissions app";
+                  }else{
+                    msj = "Information";
+                  }
+                  swal({
+                    title: 'Information',
+                    text: msj,
+                    type: 'info',
+                    confirmButtonColor: '#fb8f22',
+                  });
+                  $(".btnc.profile-photo button").trigger('click');
+                }
               });
             }else{
               swal.close();
               $(".btnc.profile-photo button").trigger('click');
             }
-          });
+          }, true);
 
         }
       });
@@ -238,10 +288,16 @@ $(function(){
 
   var canvas = new fabric.Canvas('canvas',{
         preserveObjectStacking: true,
-        selection : false,
+        selection: false,
+        centeredScaling:true,
+        allowTouchScrolling: true
     });
 
-  fabric.Image.fromURL('../assets/background-canvas.png', function (img) {
+  $(".canvas").on('touchstart touchmove touchend', function(event) {
+    event.preventDefault();
+  });
+
+  fabric.Image.fromURL('/assets/background-canvas.png', function (img) {
     canvas.add(img);
     canvas.moveTo(img, 9999);
   },{
@@ -254,7 +310,8 @@ $(function(){
     hasBorders: false,
     hasControls: false,
     evented: false,
-  });
+    crossOrigin: 'anonymous',
+  },{crossOrigin: 'Anonymous'});
 
   // $(".photo .canvas .canvas-container").on('click', function(event) {
   $(".btnc.change-msj button").on('click', function(event) {

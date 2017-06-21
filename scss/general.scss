@@ -25,8 +25,11 @@ body{
   margin-top: 31px;
   @include mobile{
     padding: 0 5px;
+    text-align: center;
     img{
-      width: 100%;
+      width: 90%;
+      margin: 0 auto;
+      display: block;
     }
   }
 }
@@ -59,6 +62,9 @@ body{
   &.change-msj{
     text-align: center;
     margin: 20px 0 -30px;
+    @include mobile{
+      margin: 0px;
+    }
     button{
       background-color: #3d5d96;
       &:hover{
@@ -156,6 +162,7 @@ body{
       width: 100% !important;
       height: 100% !important;
       box-sizing: border-box;
+      // touch-action: auto !important;
       // position: absolute !important;
       // left: 0;
       // top: 0;
@@ -172,6 +179,9 @@ body{
   margin-bottom: 118px;
   margin-top: 30px;
   text-align: center;
+  @include mobile{
+    margin-top: 20px;
+  }
   button{
     border: none;
     border-radius: 5px;
@@ -187,6 +197,10 @@ body{
     outline: 0;
     background-color: rgb(0, 166, 77);
     color: white;
+    @include mobile{
+      width: 100%;
+      margin: 0;
+    }
     &:hover{
       background-color: rgb(3, 150, 72);
     }
@@ -201,6 +215,10 @@ body{
       float: left;
       margin-left: 20px;
     }
+  }
+  @include mobile{
+    display: block;
+    margin-top: 20px;
   }
   button{
     font-family: 'Populaire';
@@ -219,6 +237,9 @@ body{
     float: right;
     @include mobile{
       font-size: 34px;
+      float: none !important;
+      width: 100%;
+      margin: 0 !important;
     }
     &:hover{
       background-color: #345083;
