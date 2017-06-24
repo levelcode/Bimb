@@ -62,7 +62,7 @@ $(function(){
     setTimeout(function () {
       var w = Math.floor($(".canvas").width());
       var scale = 0.75;
-      if( $(window).width() < 768 ){
+      if( $().width() < 768 ){
         scale = 1.7;
       }
       if( typeof window.instanceImg != "undefined" ){
@@ -200,7 +200,8 @@ $(function(){
         var url = window.location.origin+"/"+response;
         console.log(url);
         if( _this.parent().hasClass('donwload') ){
-          window.open("services/donwload.php?url="+url, "_blank");
+          //window.open("services/donwload.php?url="+url, "_blank");
+          $("#download_link").attr("href","services/donwload.php?url="+url).trigger('click');
           swal.close();
         }else if ( _this.parent().hasClass('share') ){
           swal.close();
