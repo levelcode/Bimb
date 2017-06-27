@@ -201,7 +201,8 @@ $(function(){
         console.log(url);
         if( _this.parent().hasClass('donwload') ){
           //window.open("services/donwload.php?url="+url, "_blank");
-          $("#download_link").attr("href","services/donwload.php?url="+url).trigger('click');
+          // $("#download_link").attr("href","services/donwload.php?url="+url)[0].click();
+          $("#download_link").attr("src","services/donwload.php?url="+url);
           swal.close();
         }else if ( _this.parent().hasClass('share') ){
           swal.close();

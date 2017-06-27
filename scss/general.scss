@@ -18,6 +18,12 @@ body{
     }
   }
 }
+#download_link{
+  opacity: 0;
+  position: fixed;
+  left: -100%;
+  top: -100%;
+}
 #main{
 }
 .logo{
