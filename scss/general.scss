@@ -183,21 +183,22 @@ body{
 }
 .donwload{
   margin-bottom: 118px;
-  margin-top: 30px;
+  margin-top: 32px;
   text-align: center;
   @include mobile{
     margin-top: 20px;
   }
   button{
+    float: left;
     border: none;
     border-radius: 5px;
     font-family: Populaire;
     color: #fff;
     font-size: 38px;
     line-height: 1;
-    padding: 18px 10px 15px;
+    padding: 24px 20px 17px;
     text-align: center;
-    width: 224px;
+    width: 254px;
     line-height: 1;
     transition: all .3s ease;
     outline: 0;

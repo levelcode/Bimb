@@ -69,17 +69,24 @@ $(function(){
         canvas.remove(window.instanceImg);
       }
       var imgElement = document.getElementById('img-load');
+      var cornerSize = 14;
+      if( $(window).width() < 768 ){
+        cornerSize = 26;
+      }
+      scale = 1;
       var imgInstance = new fabric.Image(imgElement, {
         left: 0,
         top: 0,
         angle: 0,
         opacity: 1,
+        cornerSize: cornerSize,
         borderColor: 'rgba(2, 0, 100, 0.9)',
         cornerColor: 'rgba(2, 0, 100, 0.9)',
         transparentCorners: false,
         crossOrigin: 'Anonymous',
         scaleX: scale,
-        scaleY: scale
+        scaleY: scale,
+        scale: 0
       });
       window.instanceImg = imgInstance;
       canvas.add(imgInstance).setActiveObject(imgInstance);
@@ -103,7 +110,7 @@ $(function(){
 
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '274662929667884',
+      appId      : '316155298796722',
       xfbml      : true,
       version    : 'v2.9',
       status     : true
@@ -288,6 +295,7 @@ $(function(){
 
   canvasFixSize();
 
+  // var canvas = new fabric.StaticCanvas('canvas',{
   var canvas = new fabric.Canvas('canvas',{
         preserveObjectStacking: true,
         selection: false,
