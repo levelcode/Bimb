@@ -21,8 +21,8 @@ var vendorDependencies = [
   bowerFolder + 'jquery/dist/jquery.min.js',
   bowerFolder + 'bootstrap/dist/js/bootstrap.min.js',
   bowerFolder + 'sweetalert2/dist/sweetalert2.min.js',
-  // bowerFolder + 'fabric.js/dist/fabric.min.js',
-  'js/fabric.min.js',
+  bowerFolder + 'fabric.js/dist/fabric.min.js',
+  // 'js/fabric.min.js',
 ];
 gulp.task('serve', function() {
   var files = [

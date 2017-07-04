@@ -1,6 +1,7 @@
 $(function(){
 
   var text = 0;
+  window.scaleImage = 1;
   var texts = [
     '/assets/texts/f1.png',
     '/assets/texts/f2.png',
@@ -12,8 +13,6 @@ $(function(){
     var img = new Image();
     img.src = texts[text];
     img.onload = function () {
-      var w = img.width;
-      var l = ( $(".canvas").width() - w ) / 2;
       var center = canvas.getCenter();
       canvas.setOverlayImage(texts[text], canvas.renderAll.bind(canvas), {
         crossOrigin: 'anonymous',
@@ -28,6 +27,23 @@ $(function(){
     if( text == 4 ){
       text = 0;
     }
+  }
+
+  function zoom(i) {
+    i = parseFloat(floorFigure(i,2));
+    if( i > window.scaleImageInit ) window.scaleImage = window.scaleImageInit;
+    if( i < 0 ) window.scaleImage = 0;
+    var center = canvas.getCenter();
+    window.instanceImg.set({
+      scaleY: i,
+      scaleX: i,
+      left: center.left,
+      top: center.top,
+      originX: 'center',
+      originY: 'center'
+    });
+    canvas.renderAll();
+    canvas.calcOffset();
   }
 
   function dataURItoBlob(dataURI) {
@@ -47,51 +63,147 @@ $(function(){
   function getPhoto(id) {
     var w = Math.floor($(".canvas").width());
     var imgProfile = "https://graph.facebook.com/" + id + "/picture?width="+w+"&height="+w;
-    // var imgProfile = "https://graph.facebook.com/100018373652787/picture?width=543&height=543";
-
-    $('#img-load').attr("src",imgProfile);
     $('#img-load')[0].crossOrigin = "Anonymous";
     $('#img-load')[0].crossorigin = "anonymous";
-    $('#img-load')[0].setAttribute("crossOrigin","Anonymous");
+    $('#img-load').attr("src",imgProfile);
     $('#img-load').on('load', function(event) {
       renderPhoto();
     });
   }
 
+  function iOS() {
+
+  var iDevices = [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'Safari',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ];
+
+  if (!!navigator.platform) {
+    while (iDevices.length) {
+      if (navigator.platform === iDevices.pop()){ return true; }
+    }
+  }
+
+  var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if( isSafari ){
+    return true;
+  }
+
+  return false;
+  }
+
   function renderPhoto(){
-    setTimeout(function () {
+    if( typeof window.instanceImg != "undefined" ){ canvas.remove(window.instanceImg); }
+    var imgElement = document.getElementById('img-load');
+    var HideControls = {
+          'tl':false, //top left corner is visible
+          'tr':false,
+          'bl':false,
+          'br':false,
+          'ml':false,
+          'mt':false,
+          'mr':false,
+          'mb':false,
+          'mtr':true
+      };
+
+    if ( iOS() ){
+      fabric.util.loadImage(imgElement.src, function(img) {
+          var w = Math.floor($(".canvas").width());
+          var wI = img.width;
+          var scale = (w/wI);
+
+          var maxWidth = w; // Max width for the image
+          var maxHeight = w;    // Max height for the image
+          if( $(window).width() < 768 ){
+            window.cornerSize = 28;
+            scale = 543 / wI;
+            maxHeight = 543;
+            maxWidth = 543;
+          } else {
+            window.cornerSize = 14;
+          }
+
+          var ratio = 0;  // Used for aspect ratio
+          var width = img.width;    // Current image width
+          var height = img.height;  // Current image height
+          var w = 543;
+          var h = 543;
+
+          if(width >= maxWidth){
+              ratio = maxWidth / width;   // get ratio for scaling image
+              h = height * ratio;   // Set new height
+              w = maxWidth;
+          }
+          if(height >= maxHeight){
+              ratio = maxHeight / height; // get ratio for scaling image
+              h = maxHeight;   // Set new height
+              w = width * ratio;   // Set new height
+          }
+
+          var object = new fabric.Image(img);
+          object.set({
+            left: 0,
+            top: 0,
+            angle: 0,
+            opacity: 1,
+            cornerSize: window.cornerSize,
+            borderColor: 'rgba(2, 0, 61, 0.95)',
+            cornerColor: 'rgba(2, 0, 61, 0.95)',
+            transparentCorners: false,
+            crossOrigin: 'Anonymous',
+            width: w,
+            height: h,
+          });
+          window.instanceImg = object;
+          object.setControlsVisibility(HideControls);
+          canvas.add(object).setActiveObject(object);
+          canvas.moveTo(object, -1);
+          window.scaleImage = scale;
+          window.scaleImageInit = scale;
+          $(".canvas").addClass('active');
+
+        }, null, {
+          crossOrigin: 'anonymous'
+        });
+    }else{
       var w = Math.floor($(".canvas").width());
-      var scale = 0.75;
-      if( $().width() < 768 ){
-        scale = 1.7;
-      }
-      if( typeof window.instanceImg != "undefined" ){
-        canvas.remove(window.instanceImg);
-      }
-      var imgElement = document.getElementById('img-load');
-      var cornerSize = 14;
+      var wI = $(imgElement).width();
+      var scale = (w/wI);
       if( $(window).width() < 768 ){
-        cornerSize = 26;
+        window.cornerSize = 28;
+        scale = 543 / wI;
+      } else {
+        window.cornerSize = 14;
       }
-      scale = 1;
       var imgInstance = new fabric.Image(imgElement, {
         left: 0,
         top: 0,
         angle: 0,
         opacity: 1,
-        cornerSize: cornerSize,
-        borderColor: 'rgba(2, 0, 100, 0.9)',
-        cornerColor: 'rgba(2, 0, 100, 0.9)',
+        cornerSize: window.cornerSize,
+        borderColor: 'rgba(2, 0, 61, 0.95)',
+        cornerColor: 'rgba(2, 0, 61, 0.95)',
         transparentCorners: false,
         crossOrigin: 'Anonymous',
         scaleX: scale,
         scaleY: scale,
-        scale: 0
       });
       window.instanceImg = imgInstance;
+      imgInstance.setControlsVisibility(HideControls);
       canvas.add(imgInstance).setActiveObject(imgInstance);
-      canvas.moveTo(imgInstance, -9999);
-    },100);
+      canvas.moveTo(imgInstance, -1);
+      window.scaleImage = scale;
+      window.scaleImageInit = scale;
+      $(".canvas").addClass('active');
+    }
+
+
   }
 
   function readURL(input,el) {
@@ -99,14 +211,17 @@ $(function(){
       var reader = new FileReader();
       reader.onload = function (e) {
         el.attr('src', e.target.result);
-        el[0].crossOrigin = "Anonymous";
-        el[0].crossorigin = "anonymous";
-        el[0].setAttribute("crossOrigin","Anonymous");
         renderPhoto();
       }
       reader.readAsDataURL(input.files[0]);
     }
   }
+
+  function floorFigure(figure, decimals){
+    if (!decimals) decimals = 2;
+    var d = Math.pow(10,decimals);
+    return (parseInt(figure*d)/d).toFixed(decimals);
+  };
 
   window.fbAsyncInit = function() {
     FB.init({
@@ -165,27 +280,32 @@ $(function(){
 
 
   $(".fb-btn.publish button, .donwload button, .fb-btn.share button").on('click', function(event) {
+
+    if( typeof window.instanceImg == "undefined" ){
+      swal("Please choose a photo");
+      return;
+    }
+
     var w = $(".canvas").width();
     var authToken = FB.getAccessToken();
-    var dataURL = canvas.toDataURL("image/jpeg", 0.98);
+    var dataURL = window.intanceCanvas.toDataURL("image/jpeg", 0.98);
     var _this = $(this);
 
-    var img = new Image();
-    img.src = dataURL;
-    img.crossOrigin = "Anonymous";
-    img.crossorigin = "anonymous";
-    img.setAttribute("crossOrigin","Anonymous");
-    img.onload = function () {
-
-      var canvas = document.createElement("canvas");
-      var w = 543;
-  		var h = w;
-
-  		canvas.width = w;
-  		canvas.height = h;
-  		var ctx = canvas.getContext("2d");
-  		ctx.drawImage(img, 0, 0, w, h);
-  		var dataURL = canvas.toDataURL("image/jpeg", 0.98);
+    // var img = new Image();
+    // img.crossOrigin = "Anonymous";
+    // img.crossorigin = "anonymous";
+    // img.src = dataURL;
+    // img.onload = function () {
+    //
+    //   var canvas = document.createElement("canvas");
+    //   var w = 543;
+  	// 	var h = w;
+    //
+  	// 	canvas.width = w;
+  	// 	canvas.height = h;
+  	// 	var ctx = canvas.getContext("2d");
+  	// 	ctx.drawImage(img, 0, 0, w, h);
+  	// 	var dataURL = canvas.toDataURL("image/jpeg", 0.98);
       blob = dataURItoBlob(dataURL);
 
       var fd = new FormData();
@@ -269,7 +389,7 @@ $(function(){
 
         }
       });
-    }
+    // }
   });
 
 
@@ -300,8 +420,10 @@ $(function(){
         preserveObjectStacking: true,
         selection: false,
         centeredScaling:true,
-        allowTouchScrolling: true
+        allowTouchScrolling: true,
     });
+
+  window.intanceCanvas = canvas;
 
   $(".canvas").on('touchstart touchmove touchend', function(event) {
     event.preventDefault();
@@ -309,7 +431,6 @@ $(function(){
 
   fabric.Image.fromURL('/assets/background-canvas.png', function (img) {
     canvas.add(img);
-    canvas.moveTo(img, 9999);
   },{
     left: 0,
     top: 0,
@@ -328,6 +449,23 @@ $(function(){
     ChangeText();
   });
 
+  $(".photo .btns .less span").on('click touchend', function(event) {
+    window.scaleImage -= 0.1;
+    zoom(window.scaleImage);
+  });
+
+  $(".photo .btns .plus span").on('click touchend', function(event) {
+    window.scaleImage += 0.1;
+    zoom(window.scaleImage);
+  });
+
   ChangeText();
+
+
+  if( iOS() ){
+    // $(".btnc.load-photo, .donwload").hide();
+    $(".donwload").hide();
+    $(".fb-btn").css("margin-bottom","118px");
+  }
 
 });
